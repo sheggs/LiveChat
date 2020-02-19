@@ -13,5 +13,10 @@ $(".chat_text_container").submit(e =>{
     socket.emit('send-message',dataToSend)
     console.log(dataToSend)
     textBox.attr("value","")
-    $(".chat_text").append("<p>Hi</p>")
+    $(".chat_text").append("<p>"+dataToSend+"</p>")
+})
+
+socket.on('chat-message', (data) =>{
+    console.log("Message Receieved")
+    $(".chat_text").append("<p>" + data + "</p>")
 })

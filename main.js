@@ -4,25 +4,28 @@ const path = require('path')
 const app = express();
 const bodyParser = require('body-parser');
 const router = express.Router();
+const session = require('express-session');
 
 const index = require('./routes/index');
 
-//const mysql = require('mysql');
 
 
-//const con = require('./router/connection');
+app.use(session({
+    secret: 'sec',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        path: '/',
+        secure: false,
+        sameSite: true,
+        maxAge: 1000000
+    }
+}));
 
 
-//const session = require('express-session');
-// app.use(session({
-//     secret: 'sec',
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { path:'/',
-//     secure: false,
-//     sameSite:true,
-//     maxAge: 1000000 }})
-// );
+
+
+
 
 console.log("Test")
 app.use(bodyParser.json());
