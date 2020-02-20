@@ -15,8 +15,15 @@ $(".chat_text_container").submit(e =>{
     textBox.attr("value","")
     $(".chat_text").append("<p>"+dataToSend+"</p>")
 })
-
+socket.on("public-id",(data) =>{
+    console.log("wow")
+    console.log(data)
+})
 socket.on('chat-message', (data) =>{
     console.log("Message Receieved")
     $(".chat_text").append("<p>" + data + "</p>")
+})
+
+socket.on('public-id', (data) => {
+
 })

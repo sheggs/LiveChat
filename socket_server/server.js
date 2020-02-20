@@ -2,7 +2,7 @@ const socketIO = require('socket.io')(3000)
 // Socket ID Only lasts during the two way connection. Resets each time.
 const session = require('express-session');
 
-app.use(session({
+const session_key = (session({
     secret: 'sec',
     resave: false,
     saveUninitialized: true,
