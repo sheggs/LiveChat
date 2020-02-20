@@ -5,10 +5,16 @@ const app = express();
 const bodyParser = require('body-parser');
 const router = express.Router();
 const session = require('express-session');
-const memorystore = require('memorystore')(session)
+// const memorystore = require('memorystore')(session)
+const socketSession = require('express-socket.io-session');
 const index = require('./routes/index');
 //const connect = require('connect')
 const socketIO = require('socket.io')(3000);
+
+
+
+
+
 // Socket ID Only lasts during the two way connection. Resets each time.
 function getSID(string) {
     let cookie_id = undefined
@@ -18,10 +24,10 @@ function getSID(string) {
     }
     return (cookie_id)
 }
-let session_storage = new memorystore();
+// let session_storage = new memorystore();
 const session_key = (session({
     secret: 'sec',
-    store: session_storage,
+    // store: session_storage,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -32,26 +38,18 @@ const session_key = (session({
     }
 })
 );
+
+app.use(session_key);
+socketIO.use(socketSession(session_key))
+
+
 // Here we can use node to store the user info in a cookie.
 
-let x = []
 // Everytime a user loads up the website
 socketIO.on('connection', socket => {
-    // Custom Network name
-    console.log(socket.id)
-    var cookie_string = socket.request.headers.cookie;
-    let sid = getSID(cookie_string)
-    if (sid != undefined) {
-        session_storage.get(sid, function (error, session) {
-            // console.log("___")
-            // console.log(session_storage.store)
-            // console.log(session)
-            // console.log(error)
-        });
-    }
-    console.log(cookie_string)
-    //console.log(socket.)
-    // socket.emit('chat-message', "")
+    console.log("hi")
+    console.log(socket.handshake.session.username)
+    socket.emit('chat-message', "")
     socket.on('send-message', message => {
         socket.broadcast.emit('chat-message', message)
     })
@@ -59,25 +57,6 @@ socketIO.on('connection', socket => {
 
 
 
-// const socketIO = require('socket.io')(3000)
-
-let sessMiddleware = session({
-    secret: 'sec',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        path: '/',
-        secure: false,
-        sameSite: true,
-        maxAge: 1000000
-    }
-})
-
-
-// socketIO.use((socket,next) => {
-//     sessMiddleware(socket.request,socket.request.res,next);
-// })
-app.use(session_key);
 
 
 app.use(bodyParser.json());
